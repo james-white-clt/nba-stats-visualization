@@ -34,9 +34,9 @@ Before you begin, ensure you have met the following requirements:
 
 ## Built With
 
-Python, HTML - The programming languages used.
-Flask - The web framework used.
-Plotly - For interactive data visualization.
+- Python, HTML - The programming languages used.
+- Flask - The web framework used.
+- Plotly - For interactive data visualization.
 
 ## License
 
