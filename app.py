@@ -1,10 +1,6 @@
 from flask import Flask, render_template, request, send_from_directory
 import pandas as pd
-import matplotlib.pyplot as plt
-import io
-import base64
 import os
-import plotly.express as px
 from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 
@@ -30,19 +26,16 @@ def plotly_chart():
     # Process form data (selected stat and team) here
     if request.method == 'POST':
         selected_stat = request.form['selected_stat']
-        selected_team = request.form.getlist('selected_team')
+        selected_team = request.form['selected_team']
     else:
         selected_stat = request.args.get('selected_stat', 'PTS_PER')
-        selected_team = request.args.getlist('selected_team')
-
-    # Check if selected_team is empty and set a default value
-    if not selected_team:
-        selected_team = [""]  # Set a default value
+        selected_team = request.args.get('selected_team', '')
+        
 
     # Filter the data based on the selected team for both dataTotals and dataAdvanced
-    if selected_team[0]:
-        filtered_data_totals = dataTotals[dataTotals['Tm'] == selected_team[0]]
-        filtered_data_advanced = dataAdvanced[dataAdvanced['Tm'] == selected_team[0]]
+    if selected_team:
+        filtered_data_totals = dataTotals[dataTotals['Tm'] == selected_team]
+        filtered_data_advanced = dataAdvanced[dataAdvanced['Tm'] == selected_team]
     else:
         # No team selected, include all teams in both datasets
         filtered_data_totals = dataTotals
@@ -92,6 +85,8 @@ def plotly_chart():
         title=f'NBA Players: {x_label} vs {y_label}',
         hovermode='closest'
     )
+
+    
 
     # Convert Plotly figure to HTML
     chart_html = fig.to_html(full_html=False)
