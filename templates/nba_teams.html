@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NBA Player Comparison</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        /* Style for the navigation bar */
+        ul.navbar {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        li.nav-item {
+            float: left;
+        }
+
+        li.nav-item a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        /* Change color on hover */
+        li.nav-item a:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <ul class="navbar">
+        <li class="nav-item"><a href="http://127.0.0.1:5000/">Home</a></li>
+        <li class="nav-item"><a href="http://127.0.0.1:5000/plotly_chart">Plotly Chart</a></li>
+        <li class="nav-item"><a href="http://127.0.0.1:5000/nba_teams">NBA Teams</a></li>
+        <li class="nav-item"><a href="http://127.0.0.1:5000/nba_players">NBA Players</a></li>
+    </ul>
+
+    <h1>NBA Team Comparison</h1>
+    
+    <!-- Form for selecting stats and players -->
+    <form method="GET" action="/nba_teams">
+        <label for="stat">Select Stat:</label>
+        <select name="stat" id="stat">
+            <option value="W/L" {% if selected_stat == "W/L" %}selected{% endif %}>Win/Loss Difference</option>
+            <option value="TmPts" {% if selected_stat == "TmPts" %}selected{% endif %}>Team's Points</option>
+            <option value="TmFG" {% if selected_stat == "TmFG" %}selected{% endif %}>Team's Field Goals Made</option>
+            <option value="TmFGA" {% if selected_stat == "TmFGA" %}selected{% endif %}>Team's Field Goals Attempted</option>
+            <option value="TmFG%" {% if selected_stat == "TmFG%" %}selected{% endif %}>Team's Field Goal Percentage</option>
+            <option value="Tm3P" {% if selected_stat == "Tm3P" %}selected{% endif %}>Team's 3-Point Field Goals Made</option>
+            <option value="Tm3PA" {% if selected_stat == "Tm3PA" %}selected{% endif %}>Team's 3-Point Field Goals Attempted</option>
+            <option value="Tm3P%" {% if selected_stat == "Tm3P%" %}selected{% endif %}>Team's 3-Point Percentage</option>
+            <option value="TmFT" {% if selected_stat == "TmFT" %}selected{% endif %}>Team's Free Throws Made</option>
+            <option value="TmFTA" {% if selected_stat == "TmFTA" %}selected{% endif %}>Team's Free Throw Attempts</option>
+            <option value="TmFT%" {% if selected_stat == "TmFT%" %}selected{% endif %}>Team's Free Throw Percentage</option>
+            <option value="TmORB" {% if selected_stat == "TmORB" %}selected{% endif %}>Team's Offensive Rebounds</option>
+            <option value="TmDRB" {% if selected_stat == "TmDRB" %}selected{% endif %}>Team's Defensive Rebounds</option>
+            <option value="TmTRB" {% if selected_stat == "TmTRB" %}selected{% endif %}>Team's Total Rebounds</option>
+            <option value="TmAST" {% if selected_stat == "TmAST" %}selected{% endif %}>Team's Assists</option>
+            <option value="TmSTL" {% if selected_stat == "TmSTL" %}selected{% endif %}>Team's Steals</option>
+            <option value="TmBLK" {% if selected_stat == "TmBLK" %}selected{% endif %}>Team's Blocks</option>
+            <option value="TmTOV" {% if selected_stat == "TmTOV" %}selected{% endif %}>Team's Turnovers</option>
+            <option value="TmPF" {% if selected_stat == "TmPF" %}selected{% endif %}>Team's Personal Fouls</option>
+            <option value="OpPts" {% if selected_stat == "OpPts" %}selected{% endif %}>Opponent's Points</option>
+            <option value="OpFG" {% if selected_stat == "OpFG" %}selected{% endif %}>Opponent's Field Goals Made</option>
+            <option value="OpFGA" {% if selected_stat == "OpFGA" %}selected{% endif %}>Opponent's Field Goals Attempted</option>
+            <option value="OpFG%" {% if selected_stat == "OpFG%" %}selected{% endif %}>Opponent's Field Goal Percentage</option>
+            <option value="Op3P" {% if selected_stat == "Op3P" %}selected{% endif %}>Opponent's 3-Point Field Goals Made</option>
+            <option value="Op3PA" {% if selected_stat == "Op3PA" %}selected{% endif %}>Opponent's 3-Point Field Goals Attempted</option>
+            <option value="Op3P%" {% if selected_stat == "Op3P%" %}selected{% endif %}>Opponent's 3-Point Percentage</option>
+            <option value="OpFT" {% if selected_stat == "OpFT" %}selected{% endif %}>Opponent's Free Throws Made</option>
+            <option value="OpFTA" {% if selected_stat == "OpFTA" %}selected{% endif %}>Opponent's Free Throw Attempts</option>
+            <option value="OpFT%" {% if selected_stat == "OpFT%" %}selected{% endif %}>Opponent's Free Throw Percentage</option>
+            <option value="OpORB" {% if selected_stat == "OpORB" %}selected{% endif %}>Opponent's Offensive Rebounds</option>
+            <option value="OpDRB" {% if selected_stat == "OpDRB" %}selected{% endif %}>Opponent's Defensive Rebounds</option>
+            <option value="OpTRB" {% if selected_stat == "OpTRB" %}selected{% endif %}>Opponent's Total Rebounds</option>
+            <option value="OpAST" {% if selected_stat == "OpAST" %}selected{% endif %}>Opponent's Assists</option>
+            <option value="OpSTL" {% if selected_stat == "OpSTL" %}selected{% endif %}>Opponent's Steals</option>
+            <option value="OpBLK" {% if selected_stat == "OpBLK" %}selected{% endif %}>Opponent's Blocks</option>
+            <option value="OpTOV" {% if selected_stat == "OpTOV" %}selected{% endif %}>Opponent's Turnovers</option>
+            <option value="OpPF" {% if selected_stat == "OpPF" %}selected{% endif %}>Opponent's Personal Fouls</option>
+        </select>
+
+        <fieldset>
+            <legend>Select Players:</legend>
+            <label><input type="checkbox" name="teams" value="atlanta_hawks" {% if 'atlanta_hawks' in selected_teams %}checked{% endif %}> Atlanta Hawks</label>
+            <label><input type="checkbox" name="teams" value="boston_celtics" {% if 'boston_celtics' in selected_teams %}checked{% endif %}> Boston Celtics</label>
+            <label><input type="checkbox" name="teams" value="brooklyn_nets" {% if 'brooklyn_nets' in selected_teams %}checked{% endif %}> Brooklyn Nets</label>
+            <label><input type="checkbox" name="teams" value="charlotte_hornets" {% if 'charlotte_hornets' in selected_teams %}checked{% endif %}> Charlotte Hornets</label>
+            <label><input type="checkbox" name="teams" value="chicago_bulls" {% if 'chicago_bulls' in selected_teams %}checked{% endif %}> Chicago Bulls</label>
+            <label><input type="checkbox" name="teams" value="cleveland_cavaliers" {% if 'cleveland_cavaliers' in selected_teams %}checked{% endif %}> Cleveland Cavaliers</label>
+            <label><input type="checkbox" name="teams" value="dallas_mavericks" {% if 'dallas_mavericks' in selected_teams %}checked{% endif %}> Dallas Mavericks</label>
+            <label><input type="checkbox" name="teams" value="denver_nuggets" {% if 'denver_nuggets' in selected_teams %}checked{% endif %}> Denver Nuggets</label>
+            <label><input type="checkbox" name="teams" value="detroit_pistons" {% if 'detroit_pistons' in selected_teams %}checked{% endif %}> Detroit Pistons</label>
+            <label><input type="checkbox" name="teams" value="golden_state_warriors" {% if 'golden_state_warriors' in selected_teams %}checked{% endif %}> Golden State Warriors</label>
+            <label><input type="checkbox" name="teams" value="houston_rockets" {% if 'houston_rockets' in selected_teams %}checked{% endif %}> Houston Rockets</label>
+            <label><input type="checkbox" name="teams" value="indiana_pacers" {% if 'indiana_pacers' in selected_teams %}checked{% endif %}> Indiana Pacers</label>
+            <label><input type="checkbox" name="teams" value="los_angeles_clippers" {% if 'los_angeles_clippers' in selected_teams %}checked{% endif %}> Los Angeles Clippers</label>
+            <label><input type="checkbox" name="teams" value="los_angeles_lakers" {% if 'los_angeles_lakers' in selected_teams %}checked{% endif %}> Los Angeles Lakers</label>
+            <label><input type="checkbox" name="teams" value="memphis_grizzlies" {% if 'memphis_grizzlies' in selected_teams %}checked{% endif %}> Memphis Grizzlies</label>
+            <label><input type="checkbox" name="teams" value="miami_heat" {% if 'miami_heat' in selected_teams %}checked{% endif %}> Miami Heat</label>
+            <label><input type="checkbox" name="teams" value="milwaukee_bucks" {% if 'milwaukee_bucks' in selected_teams %}checked{% endif %}> Milwaukee Bucks</label>
+            <label><input type="checkbox" name="teams" value="minnesota_timberwolves" {% if 'minnesota_timberwolves' in selected_teams %}checked{% endif %}> Minnesota Timberwolves</label>
+            <label><input type="checkbox" name="teams" value="new_orleans_pelicans" {% if 'new_orleans_pelicans' in selected_teams %}checked{% endif %}> New Orleans Pelicans</label>
+            <label><input type="checkbox" name="teams" value="new_york_knicks" {% if 'new_york_knicks' in selected_teams %}checked{% endif %}> New York Knicks</label>
+            <label><input type="checkbox" name="teams" value="oklahoma_city_thunder" {% if 'oklahoma_city_thunder' in selected_teams %}checked{% endif %}> Oklahoma City Thunder</label>
+            <label><input type="checkbox" name="teams" value="orlando_magic" {% if 'orlando_magic' in selected_teams %}checked{% endif %}> Orlando Magic</label>
+            <label><input type="checkbox" name="teams" value="philadelphia_76ers" {% if 'philadelphia_76ers' in selected_teams %}checked{% endif %}> Philadelphia 76ers</label>
+            <label><input type="checkbox" name="teams" value="phoenix_suns" {% if 'phoenix_suns' in selected_teams %}checked{% endif %}> Phoenix Suns</label>
+            <label><input type="checkbox" name="teams" value="portland_trail_blazers" {% if 'portland_trail_blazers' in selected_teams %}checked{% endif %}> Portland Trail Blazers</label>
+            <label><input type="checkbox" name="teams" value="sacramento_kings" {% if 'sacramento_kings' in selected_teams %}checked{% endif %}> Sacramento Kings</label>
+            <label><input type="checkbox" name="teams" value="san_antonio_spurs" {% if 'san_antonio_spurs' in selected_teams %}checked{% endif %}> San Antonio Spurs</label>
+            <label><input type="checkbox" name="teams" value="toronto_raptors" {% if 'toronto_raptors' in selected_teams %}checked{% endif %}> Toronto Raptors</label>
+            <label><input type="checkbox" name="teams" value="utah_jazz" {% if 'utah_jazz' in selected_teams %}checked{% endif %}> Utah Jazz</label>
+            <label><input type="checkbox" name="teams" value="washington_wizards" {% if 'washington_wizards' in selected_teams %}checked{% endif %}> Washington Wizards</label>
+
+        </fieldset>
+
+        <input type="submit" value="Generate Chart">
+    </form>
+
+    <!-- Plotly chart container -->
+    <div id="plotly-chart">
+        {{ chart_html|safe }}
+    </div>
+
+</body>
+</html>

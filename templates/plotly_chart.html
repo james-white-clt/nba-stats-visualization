@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NBA Player Stats Visualization</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        /* Style for the navigation bar */
+        ul.navbar {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        li.nav-item {
+            float: left;
+        }
+
+        li.nav-item a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        /* Change color on hover */
+        li.nav-item a:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <ul class="navbar">
+        <li class="nav-item"><a href="http://127.0.0.1:5000/">Home</a></li>
+        <li class="nav-item"><a href="http://127.0.0.1:5000/plotly_chart">Plotly Chart</a></li>
+        <li class="nav-item"><a href="http://127.0.0.1:5000/nba_teams">NBA Teams</a></li>
+        <li class="nav-item"><a href="http://127.0.0.1:5000/nba_players">NBA Players</a></li>
+    </ul>
+
+    <h1>NBA Player Stats (2022-23 Regular Season) Visualization</h1>
+    
+    <form action="/plotly_chart" method="GET">
+        <label for="selected_stat">Select a comparison:</label>
+        <select name="selected_stat" id="selected_stat">
+            <option value="PTS_PER" {% if selected_stat == "PTS_PER" %}selected{% endif %}>Points vs PER</option>
+            <option value="AST_TOV" {% if selected_stat == "AST_TOV" %}selected{% endif %}>Assists vs Turnovers</option>
+            <option value="3PM_3PA" {% if selected_stat == "3PM_3PA" %}selected{% endif %}>3PM vs 3PA</option>
+            <!-- Add more options for other comparisons as needed -->
+        </select>
+        <!-- Filter by team -->
+        <label for="selected_team">Select a team:</label>
+        <select name="selected_team" id="selected_team">
+            <option value="" {% if selected_team == "" %}selected{% endif %}>All Teams</option>
+            <option value="ATL" {% if selected_team == "ATL" %}selected{% endif %}>Atlanta Hawks</option>
+            <option value="BOS" {% if selected_team == "BOS" %}selected{% endif %}>Boston Celtics</option>
+            <option value="BRK" {% if selected_team == "BRK" %}selected{% endif %}>Brooklyn Nets</option>
+            <option value="CHO" {% if selected_team == "CHO" %}selected{% endif %}>Charlotte Hornets</option>
+            <option value="CHI" {% if selected_team == "CHI" %}selected{% endif %}>Chicago Bulls</option>
+            <option value="CLE" {% if selected_team == "CLE" %}selected{% endif %}>Cleveland Cavaliers</option>
+            <option value="DAL" {% if selected_team == "DAL" %}selected{% endif %}>Dallas Mavericks</option>
+            <option value="DEN" {% if selected_team == "DEN" %}selected{% endif %}>Denver Nuggets</option>
+            <option value="DET" {% if selected_team == "DET" %}selected{% endif %}>Detroit Pistons</option>
+            <option value="GSW" {% if selected_team == "GSW" %}selected{% endif %}>Golden State Warriors</option>
+            <option value="HOU" {% if selected_team == "HOU" %}selected{% endif %}>Houston Rockets</option>
+            <option value="IND" {% if selected_team == "IND" %}selected{% endif %}>Indiana Pacers</option>
+            <option value="LAC" {% if selected_team == "LAC" %}selected{% endif %}>Los Angeles Clippers</option>
+            <option value="LAL" {% if selected_team == "LAL" %}selected{% endif %}>Los Angeles Lakers</option>
+            <option value="MEM" {% if selected_team == "MEM" %}selected{% endif %}>Memphis Grizzlies</option>
+            <option value="MIA" {% if selected_team == "MIA" %}selected{% endif %}>Miami Heat</option>
+            <option value="MIL" {% if selected_team == "MIL" %}selected{% endif %}>Milwaukee Bucks</option>
+            <option value="MIN" {% if selected_team == "MIN" %}selected{% endif %}>Minnesota Timberwolves</option>
+            <option value="NOP" {% if selected_team == "NOP" %}selected{% endif %}>New Orleans Pelicans</option>
+            <option value="NYK" {% if selected_team == "NYK" %}selected{% endif %}>New York Knicks</option>
+            <option value="OKC" {% if selected_team == "OKC" %}selected{% endif %}>Oklahoma City Thunder</option>
+            <option value="ORL" {% if selected_team == "ORL" %}selected{% endif %}>Orlando Magic</option>
+            <option value="PHI" {% if selected_team == "PHI" %}selected{% endif %}>Philadelphia 76ers</option>
+            <option value="PHO" {% if selected_team == "PHO" %}selected{% endif %}>Phoenix Suns</option>
+            <option value="POR" {% if selected_team == "POR" %}selected{% endif %}>Portland Trail Blazers</option>
+            <option value="SAC" {% if selected_team == "SAC" %}selected{% endif %}>Sacramento Kings</option>
+            <option value="SAS" {% if selected_team == "SAS" %}selected{% endif %}>San Antonio Spurs</option>
+            <option value="TOR" {% if selected_team == "TOR" %}selected{% endif %}>Toronto Raptors</option>
+            <option value="UTA" {% if selected_team == "UTA" %}selected{% endif %}>Utah Jazz</option>
+            <option value="WAS" {% if selected_team == "WAS" %}selected{% endif %}>Washington Wizards</option>
+        </select>
+        <input type="submit" value="Generate Chart">
+    </form>
+
+    
+
+    <!-- Display the Plotly chart -->
+    <div id="scatter-chart">
+        {{ chart_html|safe }}
+    </div>
+
+    <script>
+        // Add interactivity to the Plotly chart
+        var scatterChart = document.getElementById('scatter-chart');
+        scatterChart.on('plotly_hover', function(data){
+            var point = data.points[0];
+            var playerName = point.text;
+            var xValue = point.x;
+            var yValue = point.y;
+            var team = point.data.hoverinfo.split('<br>')[1].split(': ')[1];
+            // Display player name, team, and values on hover
+            // Customize the tooltip's appearance here
+            var tooltip = '<b>' + playerName + '</b><br>' +
+                          'Team: ' + team + '<br>' +
+                          'X Value: ' + xValue.toFixed(2) + '<br>' +
+                          'Y Value: ' + yValue.toFixed(2);
+            Plotly.tooltip({
+                text: tooltip
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+python 3.11.5
+flask
+pandas
+plotly
+
+chat gpt
+basketball reference
+
+
+https://www.google.com/search?q=python+how+to+use+csv+for+visualization&rlz=1C2CHBF_enUS846US846&sca_esv=568775834&ei=X1MUZf6uCpmzqtsP8aKE6Ag&ved=0ahUKEwi-2puplsuBAxWZmWoFHXERAY0Q4dUDCBE&uact=5&oq=python+how+to+use+csv+for+visualization&gs_lp=Egxnd3Mtd2l6LXNlcnAiJ3B5dGhvbiBob3cgdG8gdXNlIGNzdiBmb3IgdmlzdWFsaXphdGlvbjIFECEYoAEyBRAhGKABSPkZUIACWKsYcAF4AZABAZgBmQGgAfQPqgEENS4xM7gBA8gBAPgBAcICChAAGEcY1gQYsAPCAgUQABiABMICBhAAGBYYHsICCBAAGIoFGIYDwgIIECEYFhgeGB3iAwQYACBBiAYBkAYI&sclient=gws-wiz-serp
+https://code.visualstudio.com/docs/languages/python#:~:text=You%20must%20install%20a%20Python,from%20the%20VS%20Code%20Marketplace.
+https://medium.com/@pelinokutan/analyzing-and-visualizing-data-from-a-csv-file-using-pandas-and-matplotlib-in-python-c729ce479683
+https://www.youtube.com/watch?v=a9UrKTVEeZA
+
+http://127.0.0.1:5000/
+
+WARNING
+    |
+    |
+    V
+
+inactive, did not dress
+some players (like KD) dont have 82 games due to trading/scheduling

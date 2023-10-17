@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NBA Player Comparison</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        /* Style for the navigation bar */
+        ul.navbar {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        li.nav-item {
+            float: left;
+        }
+
+        li.nav-item a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        /* Change color on hover */
+        li.nav-item a:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <ul class="navbar">
+        <li class="nav-item"><a href="http://127.0.0.1:5000/">Home</a></li>
+        <li class="nav-item"><a href="http://127.0.0.1:5000/plotly_chart">Plotly Chart</a></li>
+        <li class="nav-item"><a href="http://127.0.0.1:5000/nba_teams">NBA Teams</a></li>
+        <li class="nav-item"><a href="http://127.0.0.1:5000/nba_players">NBA Players</a></li>
+    </ul>
+
+    <h1>NBA Player Comparison</h1>
+    
+    <!-- Form for selecting stats and players -->
+    <form method="GET" action="/nba_players">
+        <label for="stat">Select Stat:</label>
+        <select name="stat" id="stat">
+            <option value="MP" {% if selected_stat == "MP" %}selected{% endif %}>Minutes Played</option>
+            <option value="FG" {% if selected_stat == "FG" %}selected{% endif %}>Field Goals Made</option>
+            <option value="FGA" {% if selected_stat == "FGA" %}selected{% endif %}>Field Goals Attempted</option>
+            <option value="FG%" {% if selected_stat == "FG%" %}selected{% endif %}>Field Goal Percentage</option>
+            <option value="3P" {% if selected_stat == "3P" %}selected{% endif %}>3-Point Field Goals Made</option>
+            <option value="3PA" {% if selected_stat == "3PA" %}selected{% endif %}>3-Point Field Goals Attempted</option>
+            <option value="3P%" {% if selected_stat == "3P%" %}selected{% endif %}>3-Point Percentage</option>
+            <option value="FT" {% if selected_stat == "FT" %}selected{% endif %}>Free Throws Made</option>
+            <option value="FTA" {% if selected_stat == "FTA" %}selected{% endif %}>Free Throw Attempts</option>
+            <option value="FT%" {% if selected_stat == "FT%" %}selected{% endif %}>Free Throw Percentage</option>
+            <option value="ORB" {% if selected_stat == "ORB" %}selected{% endif %}>Offensive Rebounds</option>
+            <option value="DRB" {% if selected_stat == "DRB" %}selected{% endif %}>Defensive Rebounds</option>
+            <option value="TRB" {% if selected_stat == "TRB" %}selected{% endif %}>Total Rebounds</option>
+            <option value="AST" {% if selected_stat == "AST" %}selected{% endif %}>Assists</option>
+            <option value="STL" {% if selected_stat == "STL" %}selected{% endif %}>Steals</option>
+            <option value="BLK" {% if selected_stat == "BLK" %}selected{% endif %}>Blocks</option>
+            <option value="TOV" {% if selected_stat == "TOV" %}selected{% endif %}>Turnovers</option>
+            <option value="PF" {% if selected_stat == "PF" %}selected{% endif %}>Personal Fouls</option>
+            <option value="PTS" {% if selected_stat == "PTS" %}selected{% endif %}>Points</option>
+            <option value="GmSc" {% if selected_stat == "GmSc" %}selected{% endif %}>Game Score</option>
+            <option value="+/-" {% if selected_stat == "+/-" %}selected{% endif %}>Plus/Minus</option>
+        </select>
+
+        <fieldset>
+            <legend>Select Players:</legend>
+            <label><input type="checkbox" name="players" value="andrew_wiggins" {% if 'andrew_wiggins' in selected_players %}checked{% endif %}> Andrew Wiggins</label>
+            <label><input type="checkbox" name="players" value="anthony_davis" {% if 'anthony_davis' in selected_players %}checked{% endif %}> Anthony Davis</label>
+            <label><input type="checkbox" name="players" value="anthony_edwards" {% if 'anthony_edwards' in selected_players %}checked{% endif %}> Anthony Edwards</label>
+            <label><input type="checkbox" name="players" value="bam_adebayo" {% if 'bam_adebayo' in selected_players %}checked{% endif %}> Bam Adebayo</label>
+            <label><input type="checkbox" name="players" value="ben_simmons" {% if 'ben_simmons' in selected_players %}checked{% endif %}> Ben Simmons</label>
+            <label><input type="checkbox" name="players" value="bradley_beal" {% if 'bradley_beal' in selected_players %}checked{% endif %}> Bradley Beal</label>
+            <label><input type="checkbox" name="players" value="brandon_ingram" {% if 'brandon_ingram' in selected_players %}checked{% endif %}> Brandon Ingram</label>
+            <label><input type="checkbox" name="players" value="chris_paul" {% if 'chris_paul' in selected_players %}checked{% endif %}> Chris Paul</label>
+            <label><input type="checkbox" name="players" value="damian_lillard" {% if 'damian_lillard' in selected_players %}checked{% endif %}> Damian Lillard</label>
+            <label><input type="checkbox" name="players" value="darius_garland" {% if 'darius_garland' in selected_players %}checked{% endif %}> Darius Garland</label>
+            <label><input type="checkbox" name="players" value="deaaron_fox" {% if 'deaaron_fox' in selected_players %}checked{% endif %}> De'Aaron Fox</label>
+            <label><input type="checkbox" name="players" value="dejounte_murray" {% if 'dejounte_murray' in selected_players %}checked{% endif %}> Dejounte Murray</label>
+            <label><input type="checkbox" name="players" value="demar_derozan" {% if 'demar_derozan' in selected_players %}checked{% endif %}> DeMar DeRozan</label>
+            <label><input type="checkbox" name="players" value="devin_booker" {% if 'devin_booker' in selected_players %}checked{% endif %}> Devin Booker</label>
+            <label><input type="checkbox" name="players" value="domantas_sabonis" {% if 'domantas_sabonis' in selected_players %}checked{% endif %}> Domantas Sabonis</label>
+            <label><input type="checkbox" name="players" value="donovan_mitchell" {% if 'donovan_mitchell' in selected_players %}checked{% endif %}> Donovan Mitchell</label>
+            <label><input type="checkbox" name="players" value="draymond_green" {% if 'draymond_green' in selected_players %}checked{% endif %}> Draymond Green</label>
+            <label><input type="checkbox" name="players" value="giannis_antetokounmpo" {% if 'giannis_antetokounmpo' in selected_players %}checked{% endif %}> Giannis Antetokounmpo</label>
+            <label><input type="checkbox" name="players" value="ja_morant" {% if 'ja_morant' in selected_players %}checked{% endif %}> Ja Morant</label>
+            <label><input type="checkbox" name="players" value="jalen_brunson" {% if 'jalen_brunson' in selected_players %}checked{% endif %}> Jalen Brunson</label>
+            <label><input type="checkbox" name="players" value="jarrett_allen" {% if 'jarrett_allen' in selected_players %}checked{% endif %}> Jarrett Allen</label>
+            <label><input type="checkbox" name="players" value="jaylen_brown" {% if 'jaylen_brown' in selected_players %}checked{% endif %}> Jaylen Brown</label>
+            <label><input type="checkbox" name="players" value="jayson_tatum" {% if 'jayson_tatum' in selected_players %}checked{% endif %}> Jayson Tatum</label>
+            <label><input type="checkbox" name="players" value="jimmy_butler" {% if 'jimmy_butler' in selected_players %}checked{% endif %}> Jimmy Butler</label>
+            <label><input type="checkbox" name="players" value="joel_embiid" {% if 'joel_embiid' in selected_players %}checked{% endif %}> Joel Embiid</label>
+            <label><input type="checkbox" name="players" value="jrue_holiday" {% if 'jrue_holiday' in selected_players %}checked{% endif %}> Jrue Holiday</label>
+            <label><input type="checkbox" name="players" value="julius_randle" {% if 'julius_randle' in selected_players %}checked{% endif %}> Julius Randle</label>
+            <label><input type="checkbox" name="players" value="karl-anthony_towns" {% if 'karl-anthony_towns' in selected_players %}checked{% endif %}> Karl-Anthony Towns</label>
+            <label><input type="checkbox" name="players" value="kawhi_leonard" {% if 'kawhi_leonard' in selected_players %}checked{% endif %}> Kawhi Leonard</label>
+            <label><input type="checkbox" name="players" value="kevin_durant" {% if 'kevin_durant' in selected_players %}checked{% endif %}> Kevin Durant</label>
+            <label><input type="checkbox" name="players" value="khris_middleton" {% if 'khris_middleton' in selected_players %}checked{% endif %}> Khris Middleton</label>
+            <label><input type="checkbox" name="players" value="klay_thompson" {% if 'klay_thompson' in selected_players %}checked{% endif %}> Klay Thompson</label>
+            <label><input type="checkbox" name="players" value="kyle_lowry" {% if 'kyle_lowry' in selected_players %}checked{% endif %}> Kyle Lowry</label>
+            <label><input type="checkbox" name="players" value="kyrie_irving" {% if 'kyrie_irving' in selected_players %}checked{% endif %}> Kyrie Irving</label>
+            <label><input type="checkbox" name="players" value="lamelo_ball" {% if 'lamelo_ball' in selected_players %}checked{% endif %}> LaMelo Ball</label>
+            <label><input type="checkbox" name="players" value="lauri_markkanen" {% if 'lauri_markkanen' in selected_players %}checked{% endif %}> Lauri Markkanen</label>
+            <label><input type="checkbox" name="players" value="lebron_james" {% if 'lebron_james' in selected_players %}checked{% endif %}> LeBron James</label>
+            <label><input type="checkbox" name="players" value="luka_doncic" {% if 'luka_doncic' in selected_players %}checked{% endif %}> Luka Doncic</label>
+            <label><input type="checkbox" name="players" value="nikola_jokic" {% if 'nikola_jokic' in selected_players %}checked{% endif %}> Nikola Jokic</label>
+            <label><input type="checkbox" name="players" value="pascal_siakam" {% if 'pascal_siakam' in selected_players %}checked{% endif %}> Pascal Siakam</label>
+            <label><input type="checkbox" name="players" value="paul_george" {% if 'paul_george' in selected_players %}checked{% endif %}> Paul George</label>
+            <label><input type="checkbox" name="players" value="rudy_gobert" {% if 'rudy_gobert' in selected_players %}checked{% endif %}> Rudy Gobert</label>
+            <label><input type="checkbox" name="players" value="russell_westbrook" {% if 'russell_westbrook' in selected_players %}checked{% endif %}> Russell Westbrook</label>
+            <label><input type="checkbox" name="players" value="shai_gilgeous-alexander" {% if 'shai_gilgeous-alexander' in selected_players %}checked{% endif %}> Shai Gilgeous-Alexander</label>
+            <label><input type="checkbox" name="players" value="stephen_curry" {% if 'stephen_curry' in selected_players %}checked{% endif %}> Stephen Curry</label>
+            <label><input type="checkbox" name="players" value="trae_young" {% if 'trae_young' in selected_players %}checked{% endif %}> Trae Young</label>
+            <label><input type="checkbox" name="players" value="tyrese_haliburton" {% if 'tyrese_haliburton' in selected_players %}checked{% endif %}> Tyrese Haliburton</label>
+            <label><input type="checkbox" name="players" value="zach_lavine" {% if 'zach_lavine' in selected_players %}checked{% endif %}> Zach LaVine</label>
+            <label><input type="checkbox" name="players" value="zion_williamson" {% if 'zion_williamson' in selected_players %}checked{% endif %}> Zion Williamson</label>
+        </fieldset>
+
+        <input type="submit" value="Generate Chart">
+    </form>
+
+    <!-- Plotly chart container -->
+    <div id="plotly-chart">
+        {{ chart_html|safe }}
+    </div>
+
+</body>
+</html>
