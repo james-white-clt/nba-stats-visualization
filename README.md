@@ -1,6 +1,6 @@
 # NBA Stats Visualization
 
-This web application provides interactive visualizations of NBA player statistics for the 2022-23 regular season. It allows users to compare player performance based on various statistics and filter data by teams.
+This web application provides interactive visualizations of NBA player statistics for the 2022-23 regular season. It allows users to compare player performance based on various statistics and filter data by teams. Data was pulled from https://www.basketball-reference.com/
 
 ## Features
 
